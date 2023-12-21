@@ -4,12 +4,12 @@ Interact easily with Bitwarden client
 
 ## Installation
 
-    pip install odoo-configurator
+    pip install s6r-bitwarden-cli
 
 ## Usage
 
 ```python
-from s6r_bitwarden_cli import 
+from s6r_bitwarden_cli import BitwardenCli
 ```
 
 
