@@ -129,13 +129,14 @@ class BitwardenCli:
         else:
             return {}
 
-    def get_item_login(self, name):
-        res = self.get_item(name)
+    def get_item_login(self, name, organization_id='', collection_id=''):
+        res = self.get_item(name, organization_id, collection_id)
         if res and isinstance(res, dict):
             return res.get('login', {})
+        return {}
 
-    def get_item_password(self, name):
-        res = self.get_item_login(name)
+    def get_item_password(self, name, organization_id='', collection_id=''):
+        res = self.get_item_login(name, organization_id, collection_id)
         return res.get('password', '')
 
     def get_organizations(self):

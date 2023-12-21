@@ -2,6 +2,10 @@
 from .bitwarden import BitwardenCli
 
 
-if __name__ == '__main__':
+def main():
     bw_cli = BitwardenCli()
     bw_cli.login()
+
+
+if __name__ == '__main__':
+    main()

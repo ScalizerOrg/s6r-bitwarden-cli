@@ -25,3 +25,6 @@ dev = ["twine", "bumpver", "pip-tools", "pytest", "check-manifest"]
 
 [project.urls]
 Homepage = "https://github.com/ScalizerOrg/s6r-bitwarden-cli"
+
+[project.scripts]
+odoo-configurator = "s6r_bitwarden_cli.__main__:main"
