@@ -117,10 +117,12 @@ class BitwardenCli:
             args.extend(extra_args)
         return self.run(args, with_session=True) or []
 
-    def get_item(self, name, organization_id='', collection_id=''):
+    def get_item(self, name, organization_id='', collection_id='', collection_name=''):
         extra_args = []
         if organization_id:
             extra_args.append(f'--organizationid={organization_id}')
+        if collection_name and not collection_id:
+            collection_id = self.get_org_collection_id(collection_name)
         if collection_id:
             extra_args.append(f'--collectionid={collection_id}')
         res = self.search_objects(objects='items', search=name, extra_args=extra_args)
@@ -129,25 +131,39 @@ class BitwardenCli:
         else:
             return {}
 
-    def get_item_login(self, name, organization_id='', collection_id=''):
-        res = self.get_item(name, organization_id, collection_id)
+    def get_item_login(self, name, organization_id='', collection_id='', collection_name=''):
+        res = self.get_item(name, organization_id, collection_id, collection_name)
         if res and isinstance(res, dict):
             return res.get('login', {})
         return {}
 
-    def get_item_password(self, name, organization_id='', collection_id=''):
-        res = self.get_item_login(name, organization_id, collection_id)
+    def get_item_password(self, name, organization_id='', collection_id='', collection_name=''):
+        res = self.get_item_login(name, organization_id, collection_id, collection_name)
         return res.get('password', '')
 
     def get_organizations(self):
         return self.search_objects('organizations')
 
+    def get_default_organization(self):
+        organizations = self.get_organizations()
+        return organizations[0] if organizations else False
+
+    def get_default_organization_id(self):
+        organization = self.get_default_organization()
+        return organization.get('id') if organization else False
+
     def get_org_collections(self, search='', organization_id=''):
         if not organization_id:
-            organizations = self.get_organizations()
-            if organizations:
-                organization_id = organizations[0].get('id')
+            organization_id = self.get_default_organization_id()
         extra_args = [f'--organizationid={organization_id}']
         return self.search_objects('org-collections',
                                    search=search,
                                    extra_args=extra_args)
+
+    def get_org_collection(self, search='', organization_id=''):
+        collections = self.get_org_collections(search, organization_id)
+        return collections[0] if collections else False
+
+    def get_org_collection_id(self, search='', organization_id=''):
+        collection = self.get_org_collection(search, organization_id)
+        return collection.get('id') if collection else False
