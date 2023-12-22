@@ -24,19 +24,28 @@ class BitwardenCli:
         _logger.debug('SPAWN bw %s' % ' '.join(args))
         return pexpect.spawn('bw', args, encoding='utf-8')
 
-    def run(self, args, with_session=False):
+    def run(self, args, with_session=False, retry=False):
         if with_session and self.session_key:
             args.append(f"--session={self.session_key}")
-        args.insert(0, 'bw')
+        if args and args[0] != 'bw':
+            args.insert(0, 'bw')
         _logger.debug('RUN %s' % ' '.join(args))
         res = pexpect.run(' '.join(args), encoding='utf-8')
         datas = res.splitlines()[-1]
         try:
             return json.loads(datas)
         except Exception as err:
-            _logger.error(datas)
             _logger.debug(err)
-            pass
+            self.handle_error(datas)
+            if not retry:
+                return self.run(args, with_session, retry=True)
+
+    def handle_error(self, error):
+        if 'Vault is locked' in error:
+            return self.unlock()
+        if 'You are not logged in' in error:
+            return self.login()
+        raise ConnectionError(error)
 
     def set_logger(self, level=None):
         if level:
@@ -62,13 +71,13 @@ class BitwardenCli:
             return self.unlock()
 
         if status == 'unauthenticated':
+            self.session_key = ''
             if self.api_client_id and self.api_client_secret:
                 self.login_with_api_key()
             elif self.username and self.password:
                 self.login_with_password()
             else:
-                _logger.error('No logging method found')
-                return
+                raise ConnectionError('No logging method found.')
 
         if self.is_locked():
             self.unlock()
@@ -92,13 +101,14 @@ class BitwardenCli:
         child.expect(pexpect.EOF)
 
     def unlock(self):
+        if not self.password:
+            raise ConnectionError("Bitwarden master password required.")
         child = self.spawn(['unlock', '--raw'])
         child.expect('password')
         child.sendline(self.password)
         child.expect(pexpect.EOF)
         if "Invalid master password." in child.before:
-            _logger.error("Invalid master password.")
-            return
+            raise ConnectionRefusedError("Invalid Bitwarden master password.")
         self.session_key = child.before.splitlines()[-1]
         os.environ.setdefault('BITWARDEN_SESSION_KEY', self.session_key)
 
