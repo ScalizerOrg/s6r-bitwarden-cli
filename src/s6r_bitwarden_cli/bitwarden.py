@@ -110,7 +110,6 @@ class BitwardenCli:
         if "Invalid master password." in child.before:
             raise ConnectionRefusedError("Invalid Bitwarden master password.")
         self.session_key = child.before.splitlines()[-1]
-        os.environ.setdefault('BITWARDEN_SESSION_KEY', self.session_key)
 
     def search_objects(self, objects='items', search='', extra_args=None):
         """
