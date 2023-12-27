@@ -134,6 +134,9 @@ org_collection = bw.get_org_collection(search='collection_name', organization_id
 
 # Get the ID of an organization collection
 org_collection_id = bw.get_org_collection_id(search='collection_name', organization_id='organization_id')
+
+# logout from Bitwarden
+bw.logout()
 ```
 
 ## License

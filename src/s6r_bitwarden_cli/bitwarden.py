@@ -100,6 +100,11 @@ class BitwardenCli:
         child.sendline(self.password)
         child.expect(pexpect.EOF)
 
+    def logout(self):
+        args = ['logout']
+        child = self.spawn(args)
+        child.expect(pexpect.EOF)
+
     def unlock(self):
         if not self.password:
             raise ConnectionError("Bitwarden master password required.")
