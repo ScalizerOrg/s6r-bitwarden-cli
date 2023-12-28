@@ -2,14 +2,14 @@
 
 Interact easily with Bitwarden client.
 
-# Overview
+## Overview
 
 s6r-bitwarden-cli is a Python script designed to provide a convenient interface for interacting with the
 Bitwarden command-line interface (CLI) tool. It allows users to perform various Bitwarden actions, such as logging in,
 searching for items, retrieving item details, collections, organizations, directly from within a Python script.
 
 
-# Table of Contents
+## Table of Contents
 
 - [Installation](#installation)
     - [Install s6r-bitwarden-cli](#install-s6r-bitwarden-cli)
