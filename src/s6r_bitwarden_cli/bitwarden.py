@@ -98,7 +98,9 @@ class BitwardenCli:
         child.sendline(self.username)
         child.expect('Master password')
         child.sendline(self.password)
-        child.expect(pexpect.EOF)
+        i = child.expect(['Two-step login code:', pexpect.EOF])
+        if i == 0:
+            child.sendline(input('Bitwarden two-step login code:'))
 
     def logout(self):
         args = ['logout']
