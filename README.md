@@ -34,6 +34,13 @@ searching for items, retrieving item details, collections, organizations, direct
     pip install s6r-bitwarden-cli
 ```
 
+Make sure you have already logged for the first time with `bw`:
+
+```bash
+bw login
+```
+
+
 ### Install Bitwarden CLI
 
 Make sure to install the Bitwarden CLI tool on your system. 
