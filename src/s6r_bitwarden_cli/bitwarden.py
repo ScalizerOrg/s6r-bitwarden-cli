@@ -154,9 +154,26 @@ class BitwardenCli:
             return res.get('login', {})
         return {}
 
+    def get_item_fields(self, name, organization_id='', collection_id='', collection_name=''):
+        res = self.get_item(name, organization_id, collection_id, collection_name)
+        if res and isinstance(res, dict):
+            return res.get('fields', [])
+        return []
+
+    def get_item_field(self, name, field_name, organization_id='', collection_id='', collection_name=''):
+        fields = self.get_item_fields(name, organization_id, collection_id, collection_name)
+        for field in fields:
+            if field.get('name') == field_name:
+                return field.get('value', '')
+        return ''
+
     def get_item_password(self, name, organization_id='', collection_id='', collection_name=''):
         res = self.get_item_login(name, organization_id, collection_id, collection_name)
         return res.get('password', '')
+
+    def get_item_username(self, name, organization_id='', collection_id='', collection_name=''):
+        res = self.get_item_login(name, organization_id, collection_id, collection_name)
+        return res.get('username', '')
 
     def get_organizations(self):
         return self.search_objects('organizations')

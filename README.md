@@ -124,6 +124,12 @@ items = bw.search_objects(objects='items', search='keyword')
 # Retrieve details of a Bitwarden item
 item_details = bw.get_item(name='item_name')
 
+# Get username of a Bitwarden item
+username = bw.get_item_username(name='item_name')
+
+# Get value of a custom field of a Bitwarden item
+my_custom_field = bw.get_item_field(name='item_name', field_name='my_custom_field')
+
 # Get a list of Bitwarden organizations
 organizations = bw.get_organizations()
 
