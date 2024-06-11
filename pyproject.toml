@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "s6r-bitwarden-cli"
-version = "1.0.6"
+version = "1.0.7"
 description = "Interact easily with Bitwarden client"
 readme = "README.md"
 authors = [{ name = "Michel Perrocheau", email = "michel@scalizer.fr" }]

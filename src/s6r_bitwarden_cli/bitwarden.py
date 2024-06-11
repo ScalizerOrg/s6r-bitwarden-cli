@@ -182,14 +182,19 @@ class BitwardenCli:
         organizations = self.get_organizations()
         return organizations[0] if organizations else False
 
-    def get_default_organization_id(self):
+    def get_default_organization_id(self, retry=0):
         organization = self.get_default_organization()
+        if not organization and retry < 3:
+            _logger.info("Retry Bitwarden get_default_organization_id ...")
+            return self.get_default_organization_id(retry=retry + 1)
         return organization.get('id') if organization else False
 
     def get_org_collections(self, search='', organization_id=''):
+        extra_args = []
         if not organization_id:
             organization_id = self.get_default_organization_id()
-        extra_args = [f'--organizationid={organization_id}']
+        if organization_id:
+            extra_args.append(f'--organizationid={organization_id}')
         return self.search_objects('org-collections',
                                    search=search,
                                    extra_args=extra_args)
@@ -198,6 +203,9 @@ class BitwardenCli:
         collections = self.get_org_collections(search, organization_id)
         return collections[0] if collections else False
 
-    def get_org_collection_id(self, search='', organization_id=''):
+    def get_org_collection_id(self, search='', organization_id='', retry=0):
         collection = self.get_org_collection(search, organization_id)
+        if not collection and retry < 3:
+            _logger.info("Retry Bitwarden get_org_collection_id ...")
+            return self.get_org_collection_id(search, organization_id, retry + 1)
         return collection.get('id') if collection else False
